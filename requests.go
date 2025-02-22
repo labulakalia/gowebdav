@@ -38,7 +38,7 @@ func (c *Client) req(method, path string, body io.Reader, intercept func(*http.R
 			c.interceptor(method, r)
 		}
 
-		if rs, err = c.c.Do(r); err != nil {
+		if rs, err = c.clientDo(r); err != nil {
 			return
 		}
 

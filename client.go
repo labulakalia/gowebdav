@@ -22,6 +22,8 @@ type Client struct {
 	interceptor func(method string, rq *http.Request)
 	c           *http.Client
 	auth        Authorizer
+
+	clientDo func(*http.Request) (*http.Response, error)
 }
 
 // NewClient creates a new instance of client
@@ -42,7 +44,12 @@ func NewAuthClient(uri string, auth Authorizer) *Client {
 			return nil
 		},
 	}
-	return &Client{root: FixSlash(uri), headers: make(http.Header), interceptor: nil, c: c, auth: auth}
+	return &Client{root: FixSlash(uri), headers: make(http.Header), interceptor: nil, c: c, auth: auth, clientDo: c.Do}
+}
+
+// SetClientDo send http request
+func (c *Client) SetClientDo(clientDo func(*http.Request) (*http.Response, error)) {
+	c.clientDo = clientDo
 }
 
 // SetHeader lets us set arbitrary headers for a given client
