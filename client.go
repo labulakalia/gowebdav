@@ -329,6 +329,28 @@ func (c *Client) Read(path string) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+func (c *Client) GetPathRequest(path string) (*http.Request, error) {
+	auth, body := c.auth.NewAuthenticator(nil)
+	defer auth.Close()
+	var uri = PathEscape(Join(c.root, path))
+	r, err := http.NewRequest("GET", uri, body)
+	if err != nil {
+		return nil, err
+	}
+
+	for k, vals := range c.headers {
+		for _, v := range vals {
+			r.Header.Add(k, v)
+		}
+	}
+
+	if err = auth.Authorize(c.c, r, path); err != nil {
+		return nil, err
+	}
+
+	return r, nil
+}
+
 // ReadStream reads the stream for a given path
 func (c *Client) ReadStream(path string) (io.ReadCloser, error) {
 	rs, err := c.req("GET", path, nil, nil)
