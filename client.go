@@ -34,15 +34,15 @@ func NewClient(uri, user, pw string) *Client {
 // NewAuthClient creates a new client instance with a custom Authorizer
 func NewAuthClient(uri string, auth Authorizer) *Client {
 	c := &http.Client{
-		CheckRedirect: func(rq *http.Request, via []*http.Request) error {
-			if len(via) >= 10 {
-				return ErrTooManyRedirects
-			}
-			if via[0].Header.Get(XInhibitRedirect) != "" {
-				return http.ErrUseLastResponse
-			}
-			return nil
-		},
+		// CheckRedirect: func(rq *http.Request, via []*http.Request) error {
+		// 	if len(via) >= 10 {
+		// 		return ErrTooManyRedirects
+		// 	}
+		// 	if via[0].Header.Get(XInhibitRedirect) != "" {
+		// 		return errors.New("net/http: use last response")
+		// 	}
+		// 	return nil
+		// },
 	}
 	return &Client{root: FixSlash(uri), headers: make(http.Header), interceptor: nil, c: c, auth: auth, clientDo: c.Do}
 }

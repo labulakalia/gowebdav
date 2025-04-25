@@ -1,5 +1,5 @@
-module github.com/studio-b12/gowebdav
+module github.com/medianexapp/gowebdav
 
-go 1.17
+go 1.24
 
 require golang.org/x/net v0.35.0
